@@ -74,7 +74,7 @@ class _TodoListState extends State<TodoList> {
     return WillPopScope(
       onWillPop: () async {
         await _saveData();
-        return true;
+        return false;
       },
       child: SafeArea(
         child: Scaffold(
