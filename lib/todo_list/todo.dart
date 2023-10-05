@@ -1,12 +1,17 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/todo_list/todolist_controller.dart';
 
-class TodoList extends StatelessWidget {
+class TodoList extends StatefulWidget {
+  @override
+  _TodoListState createState() => _TodoListState();
+}
+
+class _TodoListState extends State<TodoList> {
   final TodoListController _controller = Get.put(TodoListController());
+  static const String todoKey = 'todo_list_key';
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,7 @@ class TodoList extends StatelessWidget {
     List<Widget> dayColumns = [];
 
     for (int i = 0; i < 7; i++) {
-      DateTime day = DateTime.now().subtract(Duration(days: i));
+      DateTime day = DateTime.now().subtract(Duration(days: -i));
       String formattedDate = DateFormat('d').format(day);
       String formattedDay = DateFormat('E').format(day);
 
@@ -61,10 +66,12 @@ class TodoList extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        return false;
+        await _saveData();
+        return true;
       },
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: const Color(0xFFF9FAFD),
           resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
@@ -77,14 +84,15 @@ class TodoList extends StatelessWidget {
             backgroundColor: const Color(0xFF97C9D2),
           ),
           body: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 30,
+                  height: 50,
                 ),
                 const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: EdgeInsets.only(left: 25.0),
                   child: Text(
                     "Today.",
                     style: TextStyle(
@@ -96,7 +104,7 @@ class TodoList extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0, bottom: 14.0),
+                  padding: const EdgeInsets.only(left: 25.0, bottom: 14.0),
                   child: Text(
                     currentDate,
                     style: const TextStyle(
@@ -107,6 +115,9 @@ class TodoList extends StatelessWidget {
                       fontFamily: "Montserrat",
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 Row(
                   children: [
@@ -166,8 +177,8 @@ class TodoList extends StatelessWidget {
           content: TextField(
             controller: taskController,
             decoration: const InputDecoration(
-              hintText: 'Enter a task',
-            ),
+                hintText: 'Enter a task',
+                hintStyle: TextStyle(color: Colors.black)),
           ),
           actions: [
             TextButton(
@@ -181,6 +192,7 @@ class TodoList extends StatelessWidget {
                 String task = taskController.text;
                 if (task.isNotEmpty) {
                   _controller.addTodoItem(task);
+                  _saveData();
                   Navigator.of(context).pop();
                 }
               },
@@ -192,28 +204,145 @@ class TodoList extends StatelessWidget {
     );
   }
 
-  Color _getRandomColor() {
-    final Random random = Random();
-    return Color(0xFF000000 + random.nextInt(0xFFFFFF));
+  Future<void> _showEditTaskDialog(
+      BuildContext context, String taskToEdit) async {
+    TextEditingController taskController =
+        TextEditingController(text: taskToEdit);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Task'),
+          content: TextField(
+            controller: taskController,
+            decoration: const InputDecoration(
+                hintText: 'Edit the task',
+                hintStyle: TextStyle(color: Colors.black)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                String updatedTask = taskController.text;
+                if (updatedTask.isNotEmpty) {
+                  _controller.editTodoItem(taskToEdit, updatedTask);
+                  _saveData();
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Edit'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
+  // Widget _buildTaskList(bool isDone) {
+  //   return Obx(
+  //     () {
+  //       final List<String> tasks = isDone
+  //           ? _controller.doneTasks.toList()
+  //           : _controller.todoItems.toList();
+  //
+  //       return ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: const NeverScrollableScrollPhysics(),
+  //         itemCount: tasks.length,
+  //         itemBuilder: (context, index) {
+  //           final task = tasks[index];
+  //           return Padding(
+  //             padding: const EdgeInsets.only(left: 30.0, right: 20),
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: Container(
+  //                 decoration: BoxDecoration(
+  //                   color: isDone
+  //                       ? const Color(0xFFEBE983)
+  //                       : const Color(0xFFD67C6C),
+  //                   borderRadius: BorderRadius.circular(30),
+  //                 ),
+  //                 height: 45,
+  //                 width: 340,
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Padding(
+  //                       padding: const EdgeInsets.all(12.0),
+  //                       child: Text(
+  //                         task,
+  //                         style: const TextStyle(
+  //                           fontSize: 15,
+  //                           color: Colors.white,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     if (!isDone)
+  //                       IconButton(
+  //                         icon: const Icon(Icons.check_box_outlined),
+  //                         onPressed: () {
+  //                           _controller.markTaskAsDone(task);
+  //                         },
+  //                       ),
+  //                     if (!isDone)
+  //                       IconButton(
+  //                         icon: const Icon(Icons.edit),
+  //                         onPressed: () {
+  //                           _showEditTaskDialog(context, task);
+  //                         },
+  //                       ),
+  //                     if (isDone)
+  //                       IconButton(
+  //                         icon: const Icon(Icons.cancel_outlined),
+  //                         onPressed: () {
+  //                           _controller.removeTodoItem(task);
+  //                         },
+  //                       ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
   Widget _buildTaskList(bool isDone) {
     return Obx(
-      () => Column(
-        children: [
-          for (String task in (isDone
-              ? _controller.doneTasks.toList()
-              : _controller.todoItems.toList()))
-            Padding(
+      () {
+        final List<String> tasks = isDone
+            ? _controller.doneTasks.toList()
+            : _controller.todoItems.toList();
+
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            final task = tasks[index];
+            // Split the task text into words
+            final words = task.split(' ');
+            // Get the first 10 words and join them back into a single string
+            final displayText = words.take(10).join(' ');
+
+            return Padding(
               padding: const EdgeInsets.only(left: 30.0, right: 20),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDone ? _getRandomColor() : _getRandomColor(),
+                    color: isDone
+                        ? const Color(0xFFEBE983)
+                        : const Color(0xFFD67C6C),
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  height: 40,
+                  height: 45,
                   width: 340,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -221,8 +350,11 @@ class TodoList extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Text(
-                          task,
-                          style: TextStyle(fontSize: 15),
+                          displayText, // Display the limited text
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       if (!isDone)
@@ -230,6 +362,13 @@ class TodoList extends StatelessWidget {
                           icon: const Icon(Icons.check_box_outlined),
                           onPressed: () {
                             _controller.markTaskAsDone(task);
+                          },
+                        ),
+                      if (!isDone)
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            _showEditTaskDialog(context, task);
                           },
                         ),
                       if (isDone)
@@ -243,9 +382,38 @@ class TodoList extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-        ],
-      ),
+            );
+          },
+        );
+      },
     );
+  }
+
+  Future<void> _loadData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? todoItems = prefs.getStringList(todoKey);
+
+      if (todoItems != null) {
+        _controller.setTodoItems(todoItems);
+      }
+    } catch (e) {
+      print('Error loading data: $e');
+    }
+  }
+
+  Future<void> _saveData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(todoKey, _controller.todoItems.toList());
+    } catch (e) {
+      print('Error saving data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
   }
 }

@@ -19,4 +19,15 @@ class TodoListController extends GetxController {
     doneTasks.remove(task);
     todoItems.remove(task);
   }
+
+  void setTodoItems(List<String> items) {
+    todoItems.assignAll(items);
+  }
+
+  void editTodoItem(String taskToEdit, String updatedTask) {
+    final int index = todoItems.indexOf(taskToEdit);
+    if (index != -1) {
+      todoItems[index] = updatedTask;
+    }
+  }
 }
