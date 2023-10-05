@@ -137,7 +137,7 @@ class _TodoListState extends State<TodoList> {
                     ),
                   ],
                 ),
-                Divider(
+                const Divider(
                   color: Colors.black,
                 ),
                 const Padding(
@@ -156,7 +156,7 @@ class _TodoListState extends State<TodoList> {
                 const SizedBox(
                   height: 10,
                 ),
-                Divider(
+                const Divider(
                   color: Colors.black,
                 ),
                 const Padding(
@@ -172,7 +172,7 @@ class _TodoListState extends State<TodoList> {
                   ),
                 ),
                 _buildTaskList(true),
-                SizedBox(
+                const SizedBox(
                   height: 65,
                 ),
               ],
