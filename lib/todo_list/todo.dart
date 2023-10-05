@@ -12,7 +12,6 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   final TodoListController _controller = Get.put(TodoListController());
   static const String todoKey = 'todo_list_key';
-
   @override
   Widget build(BuildContext context) {
     String currentDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
@@ -31,9 +30,18 @@ class _TodoListState extends State<TodoList> {
             padding: const EdgeInsets.all(3.0),
             child: Container(
               decoration: BoxDecoration(
-                color: isCurrentDate
-                    ? const Color(0xFFD67C6C)
-                    : const Color(0xFFEBE983),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    isCurrentDate
+                        ? const Color(0xFFFFF176)
+                        : const Color(0xFFFF8A65),
+                    isCurrentDate
+                        ? const Color(0xFFFFD54F)
+                        : const Color(0xFFFF7043),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
               ),
               height: 60,
@@ -63,7 +71,6 @@ class _TodoListState extends State<TodoList> {
         ),
       );
     }
-
     return WillPopScope(
       onWillPop: () async {
         await _saveData();
@@ -130,6 +137,9 @@ class _TodoListState extends State<TodoList> {
                     ),
                   ],
                 ),
+                Divider(
+                  color: Colors.black,
+                ),
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
@@ -146,6 +156,9 @@ class _TodoListState extends State<TodoList> {
                 const SizedBox(
                   height: 10,
                 ),
+                Divider(
+                  color: Colors.black,
+                ),
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
@@ -159,6 +172,9 @@ class _TodoListState extends State<TodoList> {
                   ),
                 ),
                 _buildTaskList(true),
+                SizedBox(
+                  height: 65,
+                ),
               ],
             ),
           ),
@@ -243,76 +259,6 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
-  // Widget _buildTaskList(bool isDone) {
-  //   return Obx(
-  //     () {
-  //       final List<String> tasks = isDone
-  //           ? _controller.doneTasks.toList()
-  //           : _controller.todoItems.toList();
-  //
-  //       return ListView.builder(
-  //         shrinkWrap: true,
-  //         physics: const NeverScrollableScrollPhysics(),
-  //         itemCount: tasks.length,
-  //         itemBuilder: (context, index) {
-  //           final task = tasks[index];
-  //           return Padding(
-  //             padding: const EdgeInsets.only(left: 30.0, right: 20),
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(8.0),
-  //               child: Container(
-  //                 decoration: BoxDecoration(
-  //                   color: isDone
-  //                       ? const Color(0xFFEBE983)
-  //                       : const Color(0xFFD67C6C),
-  //                   borderRadius: BorderRadius.circular(30),
-  //                 ),
-  //                 height: 45,
-  //                 width: 340,
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Padding(
-  //                       padding: const EdgeInsets.all(12.0),
-  //                       child: Text(
-  //                         task,
-  //                         style: const TextStyle(
-  //                           fontSize: 15,
-  //                           color: Colors.white,
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     if (!isDone)
-  //                       IconButton(
-  //                         icon: const Icon(Icons.check_box_outlined),
-  //                         onPressed: () {
-  //                           _controller.markTaskAsDone(task);
-  //                         },
-  //                       ),
-  //                     if (!isDone)
-  //                       IconButton(
-  //                         icon: const Icon(Icons.edit),
-  //                         onPressed: () {
-  //                           _showEditTaskDialog(context, task);
-  //                         },
-  //                       ),
-  //                     if (isDone)
-  //                       IconButton(
-  //                         icon: const Icon(Icons.cancel_outlined),
-  //                         onPressed: () {
-  //                           _controller.removeTodoItem(task);
-  //                         },
-  //                       ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
   Widget _buildTaskList(bool isDone) {
     return Obx(
       () {
@@ -326,9 +272,7 @@ class _TodoListState extends State<TodoList> {
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             final task = tasks[index];
-            // Split the task text into words
             final words = task.split(' ');
-            // Get the first 10 words and join them back into a single string
             final displayText = words.take(10).join(' ');
 
             return Padding(
@@ -337,9 +281,18 @@ class _TodoListState extends State<TodoList> {
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isDone
-                        ? const Color(0xFFEBE983)
-                        : const Color(0xFFD67C6C),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        isDone
+                            ? const Color(0xFFFFF176)
+                            : const Color(0xFFFF8A65),
+                        isDone
+                            ? const Color(0xFFFFD54F)
+                            : const Color(0xFFFF7043),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(30),
                   ),
                   height: 45,
