@@ -1,16 +1,10 @@
 # todo_app
 
-A new Flutter project.
+A Todo_list Application using shared preference..
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+ 
+![Screenshot_20231005_111037](https://github.com/Meizzosama/Todo-App/assets/100303780/620ce4d4-5f18-4ad2-9361-d37739566404)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot_20231005_190652](https://github.com/Meizzosama/Todo-App/assets/100303780/94f0d883-3615-437a-a207-53093840ca19)
