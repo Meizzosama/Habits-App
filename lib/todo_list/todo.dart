@@ -74,7 +74,7 @@ class _TodoListState extends State<TodoList> {
     return WillPopScope(
       onWillPop: () async {
         await _saveData();
-        return false;
+        return true;
       },
       child: SafeArea(
         child: Scaffold(
@@ -306,7 +306,7 @@ class _TodoListState extends State<TodoList> {
                           displayText, // Display the limited text
                           style: const TextStyle(
                             fontSize: 15,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                       ),
