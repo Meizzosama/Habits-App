@@ -61,7 +61,8 @@ class SplashScreen extends StatelessWidget {
                 margin: const EdgeInsets.all(30),
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(() => TodoList());
+                    Get.to(() => TodoList(),
+                        transition: Transition.rightToLeft);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEBE983),
@@ -91,7 +92,8 @@ class SplashScreen extends StatelessWidget {
                       size: 30,
                     ),
                     onPressed: () {
-                      // Add your IconButton logic here.
+                      Get.to(() => TodoList(),
+                          transition: Transition.rightToLeft);
                     },
                   ),
                 ],

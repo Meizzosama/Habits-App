@@ -12,6 +12,7 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   final TodoListController _controller = Get.put(TodoListController());
   static const String todoKey = 'todo_list_key';
+  double fabHeight = 56.0; // Initial height of the FloatingActionButton
   @override
   Widget build(BuildContext context) {
     String currentDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
@@ -80,15 +81,19 @@ class _TodoListState extends State<TodoList> {
         child: Scaffold(
           backgroundColor: const Color(0xFFF9FAFD),
           resizeToAvoidBottomInset: false,
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              _showAddTaskDialog(context);
-            },
-            label: const Text(
-              'Add New Habit',
-              style: TextStyle(color: Colors.black),
+          floatingActionButton: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: fabHeight,
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                _showAddTaskDialog(context);
+              },
+              label: const Text(
+                'Add New Habit',
+                style: TextStyle(color: Colors.black),
+              ),
+              backgroundColor: const Color(0xFF97C9D2),
             ),
-            backgroundColor: const Color(0xFF97C9D2),
           ),
           body: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -96,7 +101,7 @@ class _TodoListState extends State<TodoList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 10,
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 25.0),
@@ -109,6 +114,9 @@ class _TodoListState extends State<TodoList> {
                       fontFamily: "Montserrat",
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 25.0, bottom: 14.0),
@@ -124,7 +132,7 @@ class _TodoListState extends State<TodoList> {
                   ),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 Row(
                   children: [
@@ -137,8 +145,8 @@ class _TodoListState extends State<TodoList> {
                     ),
                   ],
                 ),
-                const Divider(
-                  color: Colors.black,
+                const SizedBox(
+                  height: 20,
                 ),
                 const Padding(
                   padding: EdgeInsets.all(16.0),
@@ -146,9 +154,9 @@ class _TodoListState extends State<TodoList> {
                     "To Do",
                     style: TextStyle(
                       fontSize: 32,
-                      color: Color(0xFF302F29),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: "Montserrat",
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
@@ -164,11 +172,10 @@ class _TodoListState extends State<TodoList> {
                   child: Text(
                     "Done",
                     style: TextStyle(
-                      fontSize: 32,
-                      color: Color(0xFF302F29),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: "Montserrat",
-                    ),
+                        fontSize: 32,
+                        color: Colors.black,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
                 _buildTaskList(true),
