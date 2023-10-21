@@ -12,7 +12,7 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   final TodoListController _controller = Get.put(TodoListController());
   static const String todoKey = 'todo_list_key';
-  double fabHeight = 56.0; // Initial height of the FloatingActionButton
+  double fabHeight = 56.0;
   @override
   Widget build(BuildContext context) {
     String currentDate = DateFormat('MMMM d, yyyy').format(DateTime.now());
@@ -196,11 +196,11 @@ class _TodoListState extends State<TodoList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Add New Task'),
+          title: const Text('Add New Habit'),
           content: TextField(
             controller: taskController,
             decoration: const InputDecoration(
-                hintText: 'Enter a task',
+                hintText: 'Enter a Habit',
                 hintStyle: TextStyle(color: Colors.black)),
           ),
           actions: [
