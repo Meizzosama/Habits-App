@@ -1,9 +1,9 @@
-# ToDo List App - Flutter
+# Habits App - Flutter
 
 ![Screenshot_20231005_111037](https://github.com/Meizzosama/Todo-App/assets/100303780/86622ae6-f27d-4222-9705-e1162a64276e)
 
 
-A simple ToDo List app built with Flutter. This app allows users to create, update, and delete tasks to help keep track of their daily Habits and activities.
+A simple Habits app built with Flutter. This app allows users to create, update, and delete tasks to help keep track of their daily Habits and activities.
 
 ## Features
 
@@ -20,4 +20,4 @@ A simple ToDo List app built with Flutter. This app allows users to create, upda
 1. Clone this repository to your local machine using:
 
    ```bash
-   git clone https://github.com/your-username/todo-list-app-flutter.git
+   git clone https://github.com/your-username/habits-app-flutter.git
